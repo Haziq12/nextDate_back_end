@@ -6,7 +6,7 @@ const profileSchema = new mongoose.Schema({
   avatar: String,
   datePlan: [{type: mongoose.Schema.Types.ObjectId, ref:"DatePlan"}],
   aboutMe: {type: mongoose.Schema.Types.ObjectId, ref:"AboutMe"},
-  iceBreakers: String
+  iceBreakers: [{type: mongoose.Schema.Types.ObjectId, ref:"IceBreaker"}],
 },{
     timestamps: true,
 })
