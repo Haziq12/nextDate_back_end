@@ -4,8 +4,8 @@ const profileSchema = new mongoose.Schema({
   email: {type: String, required: true, lowercase: true, unique: true},
   name: String,
   avatar: String,
-  datePlan: String,
-  aboutMe: String,
+  datePlan: [{type: mongoose.Schema.Types.ObjectId, ref:"DatePlan"}],
+  aboutMe: {type: mongoose.Schema.Types.ObjectId, ref:"AboutMe"},
   iceBreakers: String
 },{
     timestamps: true,
