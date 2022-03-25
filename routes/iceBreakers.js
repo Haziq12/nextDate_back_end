@@ -13,6 +13,7 @@ router.get('/', iceBreakerCtrl.index)
 
 router.use(decodeUserFromToken)
 router.post('/', checkAuth, iceBreakerCtrl.create)
+router.delete('/:id', checkAuth, iceBreakerCtrl.delete)
 
 
 

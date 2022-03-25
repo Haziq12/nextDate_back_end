@@ -28,7 +28,21 @@ const index = async (req, res) => {
   }
 }
 
+const deleteIceBreaker = async (req, res) => {
+  try {
+    await IceBreaker.findByIdAndDelete(req.params.id)
+    const profile = await Profile.findById(req.user.profile)
+    profile.iceBreakers.remove({ _id: req.params.id })
+    await profile.save()
+    return res.status(204).end()
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
+
 export {
   create,
   index,
+  deleteIceBreaker as delete
 }
