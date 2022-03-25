@@ -63,7 +63,22 @@ const deleteDatePlan = async (req, res) => {
   }
 }
 
+const createChat = async (req, res) => {
+  try {
+    req.body.commenter = req.user.profile
+    const datePlan = await DatePlan.findById(req.params.id)
+    datePlan.chats.push(req.body)
+    await datePlan.save()
+    const newChat = datePlan.chats[datePlan.chats.length - 1]
+    return res.status(201).json(newChat)
+  } catch (err) {
+    res.status(500).json(err)
+  }
+}
+
 export {
+  createChat,
+
   create,
   index,
   show,
