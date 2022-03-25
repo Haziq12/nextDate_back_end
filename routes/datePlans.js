@@ -12,6 +12,7 @@ const router = Router()
 router.use(decodeUserFromToken)
 router.post('/', checkAuth, datePlanCtrl.create)
 router.get('/', datePlanCtrl.index)
+router.get('/:id', datePlanCtrl.show)
 
 export {
     router

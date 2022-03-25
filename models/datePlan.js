@@ -11,7 +11,7 @@ const datePlanSchema = new Schema({
   location: String,
   activity: String,
   food: String,
-  chat: [chatSchema]
+  chats: [chatSchema]
  })
 
 
