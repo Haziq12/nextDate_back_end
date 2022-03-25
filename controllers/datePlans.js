@@ -76,8 +76,21 @@ const createChat = async (req, res) => {
   }
 }
 
+const deleteChat = async(req, res)=> {
+  try {
+    const datePlan = await DatePlan.findById(req.params.datePlanId)
+    datePlan.chats.remove({_id: req.params.chatId})
+
+    await datePlan.save()
+    return res.status(204).end()
+  }catch(err){
+    res.status(500).json(err)
+  }
+}
+
 export {
   createChat,
+  deleteChat,
 
   create,
   index,
