@@ -18,6 +18,7 @@ router.delete('/:id', checkAuth, datePlanCtrl.delete)
 
 router.post('/:id/chats', checkAuth, datePlanCtrl.createChat)
 router.delete('/:datePlanId/chats/:chatId', checkAuth, datePlanCtrl.deleteChat)
+
 export {
     router
 }
