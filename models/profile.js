@@ -8,8 +8,8 @@ const profileSchema = new mongoose.Schema({
   aboutMe: String,
   contactInfo: String,
   relationshipStatus: String,
-  datePlan: [{type: mongoose.Schema.Types.ObjectId, ref:"DatePlan"}],
   iceBreakers: [{type: mongoose.Schema.Types.ObjectId, ref:"IceBreaker"}],
+  datePlan: [{type: mongoose.Schema.Types.ObjectId, ref:"DatePlan"}],
 },{
     timestamps: true,
 })
