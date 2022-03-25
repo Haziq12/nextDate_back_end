@@ -28,7 +28,19 @@ const index = async (req, res) => {
   }
 }
 
+const show = async (req, res) => {
+  try {
+    const datePlan = await DatePlan.findById(req.params.id)
+      .populate('owner')
+      .populate('chats.commenter')
+    return res.status(200).json(datePlan)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
   create,
   index,
+  show,
 }
