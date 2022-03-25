@@ -51,9 +51,22 @@ const update = async (req, res) => {
   }
 }
 
+const deleteDatePlan = async (req, res) => {
+  try {
+    await DatePlan.findByIdAndDelete(req.params.id)
+    const profile = await Profile.findById(req.user.profile)
+    profile.datePlans.remove({ _id: req.params.id })
+    await profile.save()
+    return res.status(204).end()
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
   create,
   index,
   show,
-  update
+  update,
+  deleteDatePlan as delete
 }
