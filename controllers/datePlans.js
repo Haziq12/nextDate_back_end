@@ -39,8 +39,21 @@ const show = async (req, res) => {
   }
 }
 
+const update = async (req, res) => {
+  try {
+    const updatedDateplan = await DatePlan.findByIdAndUpdate(
+      req.params.id, req.body,
+      { new: true }
+    )
+    return res.status(200).json(updatedDateplan)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
   create,
   index,
   show,
+  update
 }
