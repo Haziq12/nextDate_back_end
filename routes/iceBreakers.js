@@ -16,6 +16,7 @@ router.post('/', checkAuth, iceBreakerCtrl.create)
 router.delete('/:id', checkAuth, iceBreakerCtrl.delete)
 
 router.post('/:id/chats', checkAuth, iceBreakerCtrl.createChat)
+router.delete('/:iceBreakerId/chats/:chatId', checkAuth, iceBreakerCtrl.deleteChat)
 
 
 

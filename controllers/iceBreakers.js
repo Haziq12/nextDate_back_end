@@ -53,10 +53,23 @@ const createChat = async (req, res) => {
   }
 }
 
+const deleteChat = async(req, res)=> {
+  try {
+    const iceBreaker = await IceBreaker.findById(req.params.iceBreakerId)
+    iceBreaker.chats.remove({_id: req.params.chatId})
+
+    await iceBreaker.save()
+    return res.status(204).end()
+  }catch(err){
+    res.status(500).json(err)
+  }
+}
+
 
 export {
   create,
   index,
   deleteIceBreaker as delete,
-  createChat
+  createChat,
+  deleteChat
 }

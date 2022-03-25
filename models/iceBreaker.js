@@ -2,7 +2,7 @@ import mongoose from 'mongoose'
 const Schema = mongoose.Schema
 
 const chatSchema = new Schema({
-  chats: String,
+  chat: String,
   commenter: { type: mongoose.Schema.Types.ObjectId, ref: 'Profile' }
 })
 
