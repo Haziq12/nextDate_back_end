@@ -17,6 +17,18 @@ const create = async (req, res) => {
   }
 }
 
+const index = async (req, res) => {
+  try {
+    const iceBreakers = await IceBreaker.find({})
+      .populate('owner')
+      .sort({ createdAt: 'desc' })
+    return res.status(200).json(iceBreakers)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
-   create,
+  create,
+  index,
 }
