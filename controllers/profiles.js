@@ -18,7 +18,20 @@ const show = async (req, res) => {
   }
 }
 
+const update = async (req, res) => {
+  try {
+    const updatedProfile = await Profile.findByIdAndUpdate(
+      req.params.id, req.body,
+      { new: true }
+    )
+    return res.status(200).json(updatedProfile)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
   index,
   show,
+  update
 }
