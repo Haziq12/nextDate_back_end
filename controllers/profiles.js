@@ -1,4 +1,5 @@
 import { Profile } from '../models/profile.js'
+import { User } from '../models/user.js'
 
 function index(req, res) {
   Profile.find({})
@@ -30,8 +31,20 @@ const update = async (req, res) => {
   }
 }
 
+const deleteProfile = async (req, res) => {
+  try {
+
+    await Profile.findByIdAndDelete(req.params.id)
+    await User.findByIdAndDelete(req.user)
+    return res.status(200).json("Deleted")
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 export {
-  index,
   show,
-  update
+  index,
+  update,
+  deleteProfile as delete
 }
