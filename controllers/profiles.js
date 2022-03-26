@@ -9,4 +9,16 @@ function index(req, res) {
   })
 }
 
-export { index }
+const show = async (req, res) => {
+  try {
+    const profile = await Profile.findById(req.params.id)
+    return res.status(200).json(profile)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
+export {
+  index,
+  show,
+}
