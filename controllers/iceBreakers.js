@@ -40,6 +40,17 @@ const deleteIceBreaker = async (req, res) => {
   }
 }
 
+const show = async (req, res) => {
+  try {
+    const iceBreaker = await IceBreaker.findById(req.params.id)
+      .populate('owner')
+      .populate('chats.commenter')
+    return res.status(200).json(iceBreaker)
+  } catch (err) {
+    return res.status(500).json(err)
+  }
+}
+
 const createChat = async (req, res) => {
   try {
     req.body.commenter = req.user.profile
@@ -71,5 +82,6 @@ export {
   index,
   deleteIceBreaker as delete,
   createChat,
-  deleteChat
+  deleteChat,
+  show
 }

@@ -7,6 +7,7 @@ const router = Router()
 // ========== Public Routes ===========
 
 router.get('/', iceBreakerCtrl.index)
+router.get('/:id', iceBreakerCtrl.show)
 
 
 // ========= Protected Routes ========= 
