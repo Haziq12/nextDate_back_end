@@ -33,12 +33,10 @@ const show = async (req, res) => {
   try {
     const datePlan = await DatePlan.findById(req.params.id)
       .populate('owner')
-      .populate('chats.commenter')
-=======
     
->>>>>>> 236d6cf60c8e7691ee48d6a6367a6fa24c384003
     return res.status(200).json(datePlan)
   } catch (err) {
+    console.log(err);
     return res.status(500).json(err)
   }
 }
@@ -59,11 +57,12 @@ const update = async (req, res) => {
 
 const deleteDatePlan = async (req, res) => {
   try {
-    await DatePlan.findByIdAndDelete(req.params.id)
+    const deleteDatePlan = await DatePlan.findByIdAndDelete(req.params.id)
     const profile = await Profile.findById(req.user.profile)
-    profile.datePlans.remove({ _id: req.params.id })
+    profile.datePlans.remove({ _id: req.params.id }) 
+    const populateDp = await deleteDatePlan.populate('owner')
     await profile.save()
-    return res.status(204).end()
+    return res.json(populateDp)
   } catch (err) {
     return res.status(500).json(err)
   }
