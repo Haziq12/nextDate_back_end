@@ -33,6 +33,7 @@ const show = async (req, res) => {
     const datePlan = await DatePlan.findById(req.params.id)
       .populate('owner')
       .populate('chats.commenter')
+    console.log(datePlan);
     return res.status(200).json(datePlan)
   } catch (err) {
     return res.status(500).json(err)
