@@ -6,12 +6,13 @@ const create = async (req, res) => {
   try {
     req.body.owner = req.user.profile
     const datePlan = await new DatePlan(req.body)
-    await datePlan.save()
+    const newDatePlan = await datePlan.save()
+    const populateDp = await newDatePlan.populate('owner') 
     await Profile.updateOne(
       { _id: req.user.profile },
       { $push: { datePlans: datePlan } }
     )
-    return res.status(201).json(datePlan)
+    return res.status(201).json(populateDp)
   } catch (err) {
     return res.status(500).json(err)
   }
@@ -33,6 +34,7 @@ const show = async (req, res) => {
     const datePlan = await DatePlan.findById(req.params.id)
       .populate('owner')
       .populate('chats.commenter')
+    
     return res.status(200).json(datePlan)
   } catch (err) {
     return res.status(500).json(err)
@@ -45,7 +47,9 @@ const update = async (req, res) => {
       req.params.id, req.body,
       { new: true }
     )
-    return res.status(200).json(updatedDateplan)
+    const newUpdateDatePlan = await updatedDateplan.save()
+    const populateDp = await newUpdateDatePlan.populate('owner') 
+    return res.status(200).json(populateDp)
   } catch (err) {
     return res.status(500).json(err)
   }
