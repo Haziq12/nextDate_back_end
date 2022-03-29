@@ -6,12 +6,13 @@ const create = async (req, res) => {
   try {
     req.body.owner = req.user.profile
     const iceBreaker = await new IceBreaker(req.body)
-    await iceBreaker.save()
+    const newiceBreaker = await iceBreaker.save()
+    const populateIB = await newiceBreaker.populate('owner') 
     await Profile.updateOne(
       { _id: req.user.profile },
       { $push: { iceBreakers: iceBreaker } }
     )
-    return res.status(201).json(iceBreaker)
+    return res.status(201).json(populateIB)
   } catch (err) {
     return res.status(500).json(err)
   }
