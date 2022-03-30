@@ -10,6 +10,7 @@ const profileSchema = new mongoose.Schema({
   relationshipStatus: String,
   iceBreakers: [{type: mongoose.Schema.Types.ObjectId, ref:"IceBreaker"}],
   datePlans: [{type: mongoose.Schema.Types.ObjectId, ref:"DatePlan"}],
+  photo: {type: String}
 },{
     timestamps: true,
 })

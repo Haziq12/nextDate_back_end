@@ -1,5 +1,6 @@
 import { Profile } from '../models/profile.js'
 import { User } from '../models/user.js'
+import {v2 as cloudinary} from 'cloudinary'
 
 function index(req, res) {
   Profile.find({})
@@ -20,16 +21,52 @@ const show = async (req, res) => {
 }
 
 const update = async (req, res) => {
-  try {
-    const updatedProfile = await Profile.findByIdAndUpdate(
-      req.params.id, req.body,
-      { new: true }
-    )
-    return res.status(200).json(updatedProfile)
-  } catch (err) {
-    return res.status(500).json(err)
+  if (req.body.photo === 'undefined' || !req.files['photo']) {
+    console.log('hit lline 25')
+    delete req.body['photo']
+    Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
+      .then(profile => {
+            res.status(201).json(profile)
+         
+      })
+      .catch(err => {
+        console.log(err)
+        return res.status(500).json(err)
+      })
+  } else {
+    console.log('hit line 39')
+    const imageFile = req.files.photo.path
+    cloudinary.uploader.upload(imageFile, { tags: `${req.body.name}` })
+      .then(image => {
+        console.log(image)
+        req.body.photo = image.url
+        Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
+          .then(profile => {
+                res.status(201).json(profile)
+          })
+          .catch(err => {
+            console.log(err)
+            res.status(500).json(err)
+          })
+      })
   }
 }
+
+// const update = async (req, res) => {
+//   console.log(req.body)
+//   console.log(req.params)
+//   console.log(req.files)
+//   try {
+//     const updatedProfile = await Profile.findByIdAndUpdate(
+//       req.params.id, req.body,
+//       { new: true }
+//       )
+//       console.log(updatedProfile)
+//     return res.status(200).json(updatedProfile)
+//   } catch (err) {
+//     return res.status(500).json(err)
+//   }
+// }
 
 const deleteProfile = async (req, res) => {
   try {
