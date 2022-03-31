@@ -1,22 +1,62 @@
 import { Profile } from '../models/profile.js'
 import { DatePlan } from '../models/datePlan.js'
+import {v2 as cloudinary} from 'cloudinary'
 
 
-const create = async (req, res) => {
-  try {
-    req.body.owner = req.user.profile
-    const datePlan = await new DatePlan(req.body)
-    const newDatePlan = await datePlan.save()
-    const populateDp = await newDatePlan.populate('owner') 
-    await Profile.updateOne(
-      { _id: req.user.profile },
-      { $push: { datePlans: datePlan } }
-    )
-    return res.status(201).json(populateDp)
-  } catch (err) {
-    return res.status(500).json(err)
+function create(req, res) {
+  req.body.owner = req.user.profile
+  if (req.body.photo === 'undefined' || !req.files['photo']) {
+    delete req.body['photo']
+    console.log('hit if photo undefined')
+    DatePlan.create(req.body)
+    .then(datePlan => {
+      datePlan.populate('owner')
+      .then(populatedDp => {
+        res.status(201).json(populatedDp)
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json(err)
+    })
+  } else {
+    console.log('hit if photo exists')
+    const imageFile = req.files.photo.path
+    console.log(imageFile)
+    cloudinary.uploader.upload(imageFile, {tags: `${req.body.name}`})
+    .then(image => {
+      req.body.photo = image.url
+      DatePlan.create(req.body)
+      .then(datePlan => {
+        datePlan.populate('owner')
+        .then(populatedDp => {
+          res.status(201).json(populatedDp)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json(err)
+      })
+    })
   }
 }
+
+
+// const create = async (req, res) => {
+//   try {
+//     req.body.owner = req.user.profile
+//     const datePlan = await new DatePlan(req.body)
+//     const newDatePlan = await datePlan.save()
+//     const populateDp = await newDatePlan.populate('owner') 
+//     await Profile.updateOne(
+//       { _id: req.user.profile },
+//       { $push: { datePlans: datePlan } }
+//     )
+//     return res.status(201).json(populateDp)
+//   } catch (err) {
+//     return res.status(500).json(err)
+//   }
+// }
 
 const index = async (req, res) => {
   try {
