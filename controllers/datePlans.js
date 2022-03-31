@@ -81,19 +81,56 @@ const show = async (req, res) => {
   }
 }
 
-const update = async (req, res) => {
-  try {
-    const updatedDateplan = await DatePlan.findByIdAndUpdate(
-      req.params.id, req.body,
-      { new: true }
-    )
-    const newUpdateDatePlan = await updatedDateplan.save()
-    const populateDp = await newUpdateDatePlan.populate('owner') 
-    return res.status(200).json(populateDp)
-  } catch (err) {
-    return res.status(500).json(err)
+
+function update(req, res) {
+  // req.body.owner = req.user.profile
+  console.log(req.body, req.params.id)
+  if (req.body.photo === 'undefined' || !req.files['photo']) {
+    delete req.body['photo']
+    DatePlan.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    .then(dp => {
+      dp.populate('owner')
+      .then(populatedDp => {
+        res.status(201).json(populatedDp)
+      })
+    })
+    .catch(err => {
+      console.log(err)
+      res.status(500).json(err)
+    })
+  } else {
+    const imageFile = req.files.photo.path
+    cloudinary.uploader.upload(imageFile, {tags: `${req.body.name}`})
+    .then(image => {
+      req.body.photo = image.url
+      DatePlan.findByIdAndUpdate(req.params.id, req.body, {new: true})
+      .then(dp => {
+        dp.populate('owner')
+        .then(populatedDp => {
+          res.status(201).json(populatedDp)
+        })
+      })
+      .catch(err => {
+        console.log(err)
+        res.status(500).json(err)
+      })
+    })
   }
 }
+
+// const update = async (req, res) => {
+//   try {
+//     const updatedDateplan = await DatePlan.findByIdAndUpdate(
+//       req.params.id, req.body,
+//       { new: true }
+//     )
+//     const newUpdateDatePlan = await updatedDateplan.save()
+//     const populateDp = await newUpdateDatePlan.populate('owner') 
+//     return res.status(200).json(populateDp)
+//   } catch (err) {
+//     return res.status(500).json(err)
+//   }
+// }
 
 const deleteDatePlan = async (req, res) => {
   try {
