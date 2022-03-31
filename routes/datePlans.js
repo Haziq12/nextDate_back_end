@@ -11,13 +11,14 @@ const router = Router()
 // ========= Protected Routes ========= 
 router.use(decodeUserFromToken)
 router.post('/', checkAuth, datePlanCtrl.create)
+router.post('/:id/chat', checkAuth, datePlanCtrl.createChat)
 router.get('/', datePlanCtrl.index)
 router.get('/:id', datePlanCtrl.show)
 router.put('/:id', checkAuth, datePlanCtrl.update)
 router.delete('/:id', checkAuth, datePlanCtrl.delete)
 
-router.post('/:id/chats', checkAuth, datePlanCtrl.createChat)
-router.delete('/:datePlanId/chats/:chatId', checkAuth, datePlanCtrl.deleteChat)
+// router.post('/:id/chats', checkAuth, datePlanCtrl.createChat)
+// router.delete('/:datePlanId/chats/:chatId', checkAuth, datePlanCtrl.deleteChat)
 
 export {
     router

@@ -30,6 +30,8 @@ const index = async (req, res) => {
 }
 
 const deleteIceBreaker = async (req, res) => {
+  console.log(req.user)
+  console.log(req.user.profile)
   try {
     await IceBreaker.findByIdAndDelete(req.params.id)
     const profile = await Profile.findById(req.user.profile)
