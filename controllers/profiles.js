@@ -36,6 +36,7 @@ const update = async (req, res) => {
   } else {
     console.log('hit line 39')
     const imageFile = req.files.photo.path
+    console.log(imageFile)
     cloudinary.uploader.upload(imageFile, { tags: `${req.body.name}` })
       .then(image => {
         console.log(image)

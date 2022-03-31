@@ -10,6 +10,7 @@ const datePlanSchema = new Schema({
   activity: String,
   detail: String,
   food: String,
+  photo: {type: String}
  })
 
 
