@@ -10,6 +10,7 @@ const datePlanSchema = new Schema({
   activity: String,
   detail: String,
   food: String,
+  chats: [{type: mongoose.Schema.Types.ObjectId, ref:"Chat"}],
   photo: {type: String}
  })
 
