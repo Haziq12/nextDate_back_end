@@ -14,11 +14,11 @@ function create(req, res) {
       Profile.updateOne(
         { _id: req.user.profile },
         { $push: { datePlans: datePlan } }
-      )
-      datePlan.populate('owner')
-      .then(populatedDp => {
-        res.status(201).json(populatedDp)
-      })
+          )
+        datePlan.populate('owner')
+        .then(populatedDp => {
+          res.status(201).json(populatedDp)
+        })
     })
     .catch(err => {
       console.log(err)
