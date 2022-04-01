@@ -10,12 +10,12 @@ function create(req, res) {
     delete req.body['photo']
     console.log('hit if photo undefined')
     DatePlan.create(req.body)
-    Profile.updateOne(
-      { _id: req.user.profile },
-      { $push: { datePlans: datePlan } }
-    )
-      .then(datePlan => {
-        datePlan.populate('owner')
+    .then(datePlan => {
+      datePlan.populate('owner')
+      // Profile.updateOne(
+      //   { _id: req.user.profile },
+      //   { $push: { datePlans: datePlan } }
+      // )
           .then(populatedDp => {
             res.status(201).json(populatedDp)
           })
