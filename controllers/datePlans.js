@@ -12,6 +12,10 @@ function create(req, res) {
     DatePlan.create(req.body)
     .then(datePlan => {
       datePlan.populate('owner')
+          Profile.updateOne(
+            { _id: req.user.profile },
+            { $push: { datePlans: datePlan } }
+          )
       .then(populatedDp => {
         res.status(201).json(populatedDp)
       })
