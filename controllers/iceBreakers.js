@@ -54,37 +54,10 @@ const show = async (req, res) => {
   }
 }
 
-const createChat = async (req, res) => {
-  try {
-    req.body.commenter = req.user.profile
-    const iceBreaker = await IceBreaker.findById(req.params.id)
-    iceBreaker.chats.push(req.body)
-    await iceBreaker.save()
-    const newChat = iceBreaker.chats[iceBreaker.chats.length - 1]
-    return res.status(201).json(newChat)
-  } catch (err) {
-    res.status(500).json(err)
-  }
-}
-
-const deleteChat = async(req, res)=> {
-  try {
-    const iceBreaker = await IceBreaker.findById(req.params.iceBreakerId)
-    iceBreaker.chats.remove({_id: req.params.chatId})
-
-    await iceBreaker.save()
-    return res.status(204).end()
-  }catch(err){
-    res.status(500).json(err)
-  }
-}
-
 
 export {
   create,
   index,
   deleteIceBreaker as delete,
-  createChat,
-  deleteChat,
   show
 }
