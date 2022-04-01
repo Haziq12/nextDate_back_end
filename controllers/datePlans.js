@@ -1,6 +1,6 @@
 import { Profile } from '../models/profile.js'
 import { DatePlan } from '../models/datePlan.js'
-import {v2 as cloudinary} from 'cloudinary'
+import { v2 as cloudinary } from 'cloudinary'
 import { Chat } from '../models/chat.js'
 
 
@@ -10,58 +10,41 @@ function create(req, res) {
     delete req.body['photo']
     console.log('hit if photo undefined')
     DatePlan.create(req.body)
-    .then(datePlan => {
-      Profile.updateOne(
-        { _id: req.user.profile },
-        { $push: { datePlans: datePlan } }
-          )
-        datePlan.populate('owner')
-        .then(populatedDp => {
-          res.status(201).json(populatedDp)
-        })
-    })
-    .catch(err => {
-      console.log(err)
-      res.status(500).json(err)
-    })
-  } else {
-    console.log('hit if photo exists')
-    const imageFile = req.files.photo.path
-    console.log(imageFile)
-    cloudinary.uploader.upload(imageFile, {tags: `${req.body.name}`})
-    .then(image => {
-      req.body.photo = image.url
-      DatePlan.create(req.body)
+    Profile.updateOne(
+      { _id: req.user.profile },
+      { $push: { datePlans: datePlan } }
+    )
       .then(datePlan => {
         datePlan.populate('owner')
-        .then(populatedDp => {
-          res.status(201).json(populatedDp)
-        })
+          .then(populatedDp => {
+            res.status(201).json(populatedDp)
+          })
       })
       .catch(err => {
         console.log(err)
         res.status(500).json(err)
       })
-    })
+  } else {
+    console.log('hit if photo exists')
+    const imageFile = req.files.photo.path
+    console.log(imageFile)
+    cloudinary.uploader.upload(imageFile, { tags: `${req.body.name}` })
+      .then(image => {
+        req.body.photo = image.url
+        DatePlan.create(req.body)
+          .then(datePlan => {
+            datePlan.populate('owner')
+              .then(populatedDp => {
+                res.status(201).json(populatedDp)
+              })
+          })
+          .catch(err => {
+            console.log(err)
+            res.status(500).json(err)
+          })
+      })
   }
 }
-
-
-// const create = async (req, res) => {
-//   try {
-//     req.body.owner = req.user.profile
-//     const datePlan = await new DatePlan(req.body)
-//     const newDatePlan = await datePlan.save()
-//     const populateDp = await newDatePlan.populate('owner') 
-//     await Profile.updateOne(
-//       { _id: req.user.profile },
-//       { $push: { datePlans: datePlan } }
-//     )
-//     return res.status(201).json(populateDp)
-//   } catch (err) {
-//     return res.status(500).json(err)
-//   }
-// }
 
 const index = async (req, res) => {
   try {
@@ -78,7 +61,7 @@ const show = async (req, res) => {
   try {
     const datePlan = await DatePlan.findById(req.params.id)
       .populate(['owner', 'chats'])
-    
+
     return res.status(200).json(datePlan)
   } catch (err) {
     console.log(err);
@@ -88,60 +71,45 @@ const show = async (req, res) => {
 
 
 function update(req, res) {
-  // req.body.owner = req.user.profile
   console.log(req.body, req.params.id)
   if (req.body.photo === 'undefined' || !req.files['photo']) {
     delete req.body['photo']
-    DatePlan.findByIdAndUpdate(req.params.id, req.body, {new: true})
-    .then(dp => {
-      dp.populate('owner')
-      .then(populatedDp => {
-        res.status(201).json(populatedDp)
-      })
-    })
-    .catch(err => {
-      console.log(err)
-      res.status(500).json(err)
-    })
-  } else {
-    const imageFile = req.files.photo.path
-    cloudinary.uploader.upload(imageFile, {tags: `${req.body.name}`})
-    .then(image => {
-      req.body.photo = image.url
-      DatePlan.findByIdAndUpdate(req.params.id, req.body, {new: true})
+    DatePlan.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then(dp => {
         dp.populate('owner')
-        .then(populatedDp => {
-          res.status(201).json(populatedDp)
-        })
+          .then(populatedDp => {
+            res.status(201).json(populatedDp)
+          })
       })
       .catch(err => {
         console.log(err)
         res.status(500).json(err)
       })
-    })
+  } else {
+    const imageFile = req.files.photo.path
+    cloudinary.uploader.upload(imageFile, { tags: `${req.body.name}` })
+      .then(image => {
+        req.body.photo = image.url
+        DatePlan.findByIdAndUpdate(req.params.id, req.body, { new: true })
+          .then(dp => {
+            dp.populate('owner')
+              .then(populatedDp => {
+                res.status(201).json(populatedDp)
+              })
+          })
+          .catch(err => {
+            console.log(err)
+            res.status(500).json(err)
+          })
+      })
   }
 }
-
-// const update = async (req, res) => {
-//   try {
-//     const updatedDateplan = await DatePlan.findByIdAndUpdate(
-//       req.params.id, req.body,
-//       { new: true }
-//     )
-//     const newUpdateDatePlan = await updatedDateplan.save()
-//     const populateDp = await newUpdateDatePlan.populate('owner') 
-//     return res.status(200).json(populateDp)
-//   } catch (err) {
-//     return res.status(500).json(err)
-//   }
-// }
 
 const deleteDatePlan = async (req, res) => {
   try {
     const deleteDatePlan = await DatePlan.findByIdAndDelete(req.params.id)
     const profile = await Profile.findById(req.user.profile)
-    profile.datePlans.remove({ _id: req.params.id }) 
+    profile.datePlans.remove({ _id: req.params.id })
     const populateDp = await deleteDatePlan.populate('owner')
     await profile.save()
     return res.json(populateDp)
@@ -164,22 +132,14 @@ const chatIndex = async (req, res) => {
 const createChat = async (req, res) => {
   console.log(req.params.id)
   try {
-    req.body.owner = req.params.id 
-    // console.log(req.body.owner)
+    req.body.owner = req.params.id
     const chat = await new Chat(req.body)
     console.log(req.body)
     const newChat = await chat.save()
-    // console.log(newChat)
-    // const populatedChat = await newChat.populate('owner') 
-    // console.log(populatedChat)
     const newDatePlan = await DatePlan.findById(req.params.id)
     await newDatePlan.chats.push(newChat)
     newDatePlan.save()
     const populatedDp = await newDatePlan.populate('chats')
-    // await DatePlan.updateOne(
-    //   { _id: req.params.id },
-    //   { $push: {chats: newChat} }
-    // )
     return res.status(201).json(populatedDp)
   } catch (err) {
     console.log(err)
