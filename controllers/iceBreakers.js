@@ -7,7 +7,7 @@ const create = async (req, res) => {
     req.body.owner = req.user.profile
     const iceBreaker = await new IceBreaker(req.body)
     const newiceBreaker = await iceBreaker.save()
-    const populateIB = await newiceBreaker.populate('owner') 
+    const populateIB = await newiceBreaker.populate('owner')
     await Profile.updateOne(
       { _id: req.user.profile },
       { $push: { iceBreakers: iceBreaker } }

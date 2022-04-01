@@ -1,14 +1,14 @@
 import { Profile } from '../models/profile.js'
 import { User } from '../models/user.js'
-import {v2 as cloudinary} from 'cloudinary'
+import { v2 as cloudinary } from 'cloudinary'
 
 function index(req, res) {
   Profile.find({})
-  .then(profiles => res.json(profiles))
-  .catch(err => {
-    console.log(err)
-    res.status(500).json(err)
-  })
+    .then(profiles => res.json(profiles))
+    .catch(err => {
+      console.log(err)
+      res.status(500).json(err)
+    })
 }
 
 const show = async (req, res) => {
@@ -26,8 +26,8 @@ const update = async (req, res) => {
     delete req.body['photo']
     Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then(profile => {
-            res.status(201).json(profile)
-         
+        res.status(201).json(profile)
+
       })
       .catch(err => {
         console.log(err)
@@ -43,7 +43,7 @@ const update = async (req, res) => {
         req.body.photo = image.url
         Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
           .then(profile => {
-                res.status(201).json(profile)
+            res.status(201).json(profile)
           })
           .catch(err => {
             console.log(err)
@@ -52,22 +52,6 @@ const update = async (req, res) => {
       })
   }
 }
-
-// const update = async (req, res) => {
-//   console.log(req.body)
-//   console.log(req.params)
-//   console.log(req.files)
-//   try {
-//     const updatedProfile = await Profile.findByIdAndUpdate(
-//       req.params.id, req.body,
-//       { new: true }
-//       )
-//       console.log(updatedProfile)
-//     return res.status(200).json(updatedProfile)
-//   } catch (err) {
-//     return res.status(500).json(err)
-//   }
-// }
 
 const deleteProfile = async (req, res) => {
   try {
