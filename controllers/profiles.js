@@ -22,7 +22,6 @@ const show = async (req, res) => {
 
 const update = async (req, res) => {
   if (req.body.photo === 'undefined' || !req.files['photo']) {
-    console.log('hit lline 25')
     delete req.body['photo']
     Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .then(profile => {
