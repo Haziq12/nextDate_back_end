@@ -33,19 +33,15 @@ const update = async (req, res) => {
         return res.status(500).json(err)
       })
   } else {
-    console.log('hit line 39')
     const imageFile = req.files.photo.path
-    console.log(imageFile)
     cloudinary.uploader.upload(imageFile, { tags: `${req.body.name}` })
       .then(image => {
-        console.log(image)
         req.body.photo = image.url
         Profile.findByIdAndUpdate(req.params.id, req.body, { new: true })
           .then(profile => {
             res.status(201).json(profile)
           })
           .catch(err => {
-            console.log(err)
             res.status(500).json(err)
           })
       })
